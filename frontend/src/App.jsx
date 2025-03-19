@@ -1,35 +1,98 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import TaskForm from "./componentes/TaskForm";
+import TaskList from "./componentes/TaskList";
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api"; // Valor por defecto
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+export default function App() {
+    const [tasks, setTasks] = useState([]);
+
+    // Cargar tareas al iniciar
+    useEffect(() => {
+        fetch(`${apiUrl}/tasks`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("📥 Tareas recibidas:", data); // 👀 Verifica que tengan `description`
+                setTasks(data);
+            })
+            .catch(error => console.error("❌ Error obteniendo tareas:", error));
+    }, []);
+    
+
+    // Agregar una tarea
+    const addTask = (task) => {
+        fetch(`${apiUrl}/tasks`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(task),
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Error al agregar tarea");
+            return response.json();
+        })
+        .then(newTask => setTasks(prevTasks => [...prevTasks, newTask]))
+        .catch(error => console.error('❌ Error adding task:', error));
+    };
+
+    // Eliminar una tarea
+    const deleteTask = (id) => {
+        fetch(`${apiUrl}/tasks/${id}`, { method: 'DELETE' })
+        .then(response => {
+            if (!response.ok) throw new Error("Error al eliminar tarea");
+            return response.json();
+        })
+        .then(() => setTasks(tasks.filter(task => task.id !== id)))
+        .catch(error => console.error('❌ Error deleting task:', error));
+    };
+
+    // Alternar estado de completado
+    const toggleTaskCompletion = (id) => {
+        const task = tasks.find(task => task.id === id);
+        if (!task) return;
+
+        fetch(`${apiUrl}/tasks/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...task, completed: !task.completed }),
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Error al actualizar tarea");
+            return response.json();
+        })
+        .then(updatedTask => 
+            setTasks(tasks.map(task => (task.id === id ? updatedTask : task)))
+        )
+        .catch(error => console.error('❌ Error updating task:', error));
+    };
+
+    // Editar tarea
+    const editTask = (id, newTitle, newDescription) => {
+        fetch(`${apiUrl}/tasks/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: newTitle, description: newDescription }),
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Error al editar tarea");
+            return response.json();
+        })
+        .then(updatedTask => 
+            setTasks(tasks.map(task => (task.id === id ? updatedTask : task)))
+        )
+        .catch(error => console.error('❌ Error editing task:', error));
+    };
+
+    return (
+        <div className="container">
+            <h1>Lista de Tareas</h1>
+            <TaskForm addTask={addTask} />
+            <TaskList 
+                tasks={tasks} 
+                deleteTask={deleteTask} 
+                toggleTaskCompletion={toggleTaskCompletion} 
+                editTask={editTask} 
+            />
+        </div>
+    );
 }
-
-export default App
