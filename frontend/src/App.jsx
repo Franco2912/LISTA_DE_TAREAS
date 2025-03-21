@@ -3,23 +3,23 @@ import TaskForm from "./componentes/TaskForm";
 import TaskList from "./componentes/TaskList";
 import './App.css';
 
-const apiUrl = import.meta.env.VITE_API_URL; 
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 export default function App() {
     const [tasks, setTasks] = useState([]);
 
-    // GET /api/tasks - Obtener todas las tareas
+    // Cargar tareas al iniciar
     useEffect(() => {
         fetch(`${apiUrl}/tasks`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("📥 Tareas recibidas:", data);
-                setTasks(data);
+            .then(response => {
+                if (!response.ok) throw new Error("Error al obtener las tareas");
+                return response.json();
             })
-            .catch(error => console.error("❌ Error obteniendo tareas:", error));
+            .then(data => setTasks(data))
+            .catch(error => console.error('Error fetching tasks:', error));
     }, []);
-    
-    // POST /api/tasks - Crear una nueva tarea
+
+    // Agregar una tarea
     const addTask = (task) => {
         fetch(`${apiUrl}/tasks`, {
             method: 'POST',
@@ -31,10 +31,10 @@ export default function App() {
             return response.json();
         })
         .then(newTask => setTasks(prevTasks => [...prevTasks, newTask]))
-        .catch(error => console.error('❌ Error adding task:', error));
+        .catch(error => console.error('Error adding task:', error));
     };
 
-    // DELETE /api/tasks/:id - Eliminar una tarea
+    // Eliminar una tarea
     const deleteTask = (id) => {
         fetch(`${apiUrl}/tasks/${id}`, { method: 'DELETE' })
         .then(response => {
@@ -42,10 +42,10 @@ export default function App() {
             return response.json();
         })
         .then(() => setTasks(tasks.filter(task => task.id !== id)))
-        .catch(error => console.error('❌ Error deleting task:', error));
+        .catch(error => console.error('Error deleting task:', error));
     };
 
-    // Tarea completa o incompleta
+    // Alternar estado de completado
     const TaskCompletion = (id) => {
         const task = tasks.find(task => task.id === id);
         if (!task) return;
@@ -62,19 +62,19 @@ export default function App() {
         .then(updatedTask => 
             setTasks(tasks.map(task => (task.id === id ? updatedTask : task)))
         )
-        .catch(error => console.error('❌ Error updating task:', error));
+        .catch(error => console.error('Error updating task:', error));
     };
 
-    //PUT /api/tasks/:id - Actualizar una tarea existente
+    // Editar tarea
     const editTask = (id, newTitle, newDescription) => {
         fetch(`${apiUrl}/tasks/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title: newTitle, description: newDescription }),
         })
-        .then(res => {
-            if (!res.ok) throw new Error("Error al editar tarea");
-            return res.json();
+        .then(response => {
+            if (!response.ok) throw new Error("Error al editar tarea");
+            return response.json();
         })
         .then(updatedTask => 
             setTasks(tasks.map(task => (task.id === id ? updatedTask : task)))
@@ -84,7 +84,6 @@ export default function App() {
 
     return (
         <div className="contenedor">
-            
             <h1>Lista de Tareas</h1>
             <TaskForm addTask={addTask} />
             <TaskList 
@@ -93,7 +92,6 @@ export default function App() {
                 TaskCompletion={TaskCompletion} 
                 editTask={editTask} 
             />
-            
         </div>
     );
 }

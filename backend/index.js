@@ -1,7 +1,10 @@
-const express = require('express');;
+const express = require('express');
+const cors = require('cors');
+
 const app = express();
 const PUERTO = 3000;
 
+app.use(cors()); 
 app.use(express.json()); 
 
 let tasks = [];
@@ -9,7 +12,7 @@ let idCounter = 1;
 
 // Obtener todas las tareas
 app.get('/api/tasks', (req, res) => {
-  console.log("📥 GET /api/tasks - Enviando todas las tareas");
+  console.log("GET /api/tasks - Enviando todas las tareas");
   res.json(tasks);
 });
 
@@ -34,7 +37,6 @@ app.post('/api/tasks', (req, res) => {
   res.status(201).json(newTask);
 });
 
-
 // Actualizar una tarea existente
 app.put('/api/tasks/:id', (req, res) => {
   console.log(`PUT /api/tasks/${req.params.id} - Recibido:`, req.body);
@@ -42,25 +44,23 @@ app.put('/api/tasks/:id', (req, res) => {
   const { id } = req.params;
   const { title, description, completed } = req.body;
 
-  console.log("Revisando datos recibidos:", { title, description, completed }); // 👈 Verifica esto
+  console.log(" Revisando datos recibidos:", { title, description, completed }); // 👈 Verifica esto
 
   const task = tasks.find((t) => t.id == id);
   if (!task) {
-    console.log("Error: Tarea no encontrada");
+    console.log(" Error: Tarea no encontrada");
     return res.status(404).json({ error: 'Tarea no encontrada' });
   }
-
   task.title = title !== undefined ? title : task.title;
   task.description = description !== undefined ? description : task.description;
   task.completed = completed !== undefined ? completed : task.completed;
-
   console.log("Tarea actualizada:", task);
   res.json(task);
 });
 
 // Eliminar una tarea
 app.delete('/api/tasks/:id', (req, res) => {
-  console.log(`DELETE /api/tasks/${req.params.id}`);
+  console.log(`📥 DELETE /api/tasks/${req.params.id}`);
 
   const { id } = req.params;
   const index = tasks.findIndex((t) => t.id == id);

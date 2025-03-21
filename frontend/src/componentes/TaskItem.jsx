@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TaskItem({ task }) {
     return (
-        <div className={`task-item ${task.completed ? "completed" : ""}`}>  
+        <div className={`task-item ${task.completed ? "completado" : ""}`}>  
         <li>
             <h3>{task.title}</h3>
             <p>{task.description}</p>

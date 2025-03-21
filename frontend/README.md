@@ -1,12 +1,26 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Explicación de LA "LISTA DE TAREAS":
 
-Currently, two official plugins are available:
+La aplicación permite gestionar tareas de forma sencilla con las siguientes funcionalidades:
+- Crear nuevas tareas.
+- Editar tareas existentes.
+- Eliminar tareas.
+- Marcar tareas como completadas.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Para ejecutar el programa: 
+- Desde la terminal se debe iniciar React + Vite con 'npm run dev'. (En el repositorio de /frontend)
+- Luego, para express con 'node index.js'. (En el repositorio de /backend)
+- En el terminal donde se ejecuto React, va salir ➜  Local:http://localhost:5173/ para ingresar desde el navegador 
+  a la pagina web de la lista de tareas.
 
-## Expanding the ESLint configuration
+  ![alt text](image.png)
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+  ![alt text](image-1.png)
+
+  ![alt text](image-2.png)
+
+  ![alt text](image-3.png)
+
+  ![alt text](image-4.png)
+
+  ![alt text](image-5.png)

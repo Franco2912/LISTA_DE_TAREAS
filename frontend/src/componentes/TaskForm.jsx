@@ -8,16 +8,15 @@ export default function TaskForm({ addTask }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (title) {
-          
             addTask({
-                id: Date.now(),
+                id: Date.now(), // Generar un ID temporal para la tarea
                 title,
                 description,
                 completed: false,
                 createdAt: new Date(),
             });
-            setTitle(""); 
-            setDescription(""); 
+            setTitle(""); // Limpiar el input
+            setDescription(""); // Limpiar la descripción
         }
     };
 
@@ -29,7 +28,7 @@ export default function TaskForm({ addTask }) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Título de la tarea"
-                    maxlength="15"
+                    maxLength="15"  // Cambio de `maxlength` a `maxLength`
                     required
                 />
             </div>
@@ -39,7 +38,7 @@ export default function TaskForm({ addTask }) {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Descripción de la tarea"
                     rows="4"
-                    maxlength="80"
+                    maxLength="80"  // Cambio de `maxlength` a `maxLength`
                     required
                 />
             </div>
