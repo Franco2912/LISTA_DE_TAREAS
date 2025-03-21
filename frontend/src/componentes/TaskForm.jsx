@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 
 export default function TaskForm({ addTask }) {
-    const [title, setTitle] = useState(""); // Estado para el título
-    const [description, setDescription] = useState(""); // Estado para la descripción
+    
+    const [title, setTitle] = useState(""); 
+    const [description, setDescription] = useState(""); 
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (title) {
-            // Se pasa tanto el título como la descripción
+          
             addTask({
                 id: Date.now(),
                 title,
@@ -15,8 +16,8 @@ export default function TaskForm({ addTask }) {
                 completed: false,
                 createdAt: new Date(),
             });
-            setTitle(""); // Limpiar campo título
-            setDescription(""); // Limpiar campo descripción
+            setTitle(""); 
+            setDescription(""); 
         }
     };
 
@@ -28,6 +29,7 @@ export default function TaskForm({ addTask }) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Título de la tarea"
+                    maxlength="15"
                     required
                 />
             </div>
@@ -37,6 +39,7 @@ export default function TaskForm({ addTask }) {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Descripción de la tarea"
                     rows="4"
+                    maxlength="80"
                     required
                 />
             </div>
